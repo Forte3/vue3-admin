@@ -10,7 +10,10 @@ import {
   ElForm,
   ElFormItem,
   ElInput,
-  ElCheckbox
+  ElCheckbox,
+  ElPopover,
+  ElTag,
+  ElCard
 } from 'element-plus'
 import App from './App.vue'
 import router from '@/router'
@@ -35,5 +38,8 @@ app.use(ElButton)
   .use(ElFormItem)
   .use(ElCheckbox)
   .use(ElInput)
+  .use(ElPopover)
+  .use(ElTag)
+  .use(ElCard)
 
 app.mount('#app') // 挂载到 #app
