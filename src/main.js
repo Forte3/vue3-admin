@@ -13,7 +13,12 @@ import {
   ElCheckbox,
   ElPopover,
   ElTag,
-  ElCard
+  ElCard,
+  ElTable,
+  ElUpload,
+  ElDialog,
+  ElPagination,
+
 } from 'element-plus'
 import App from './App.vue'
 import router from '@/router'
@@ -41,5 +46,9 @@ app.use(ElButton)
   .use(ElPopover)
   .use(ElTag)
   .use(ElCard)
+  .use(ElTable)
+  .use(ElUpload)
+  .use(ElDialog)
+  .use(ElPagination)
 
 app.mount('#app') // 挂载到 #app

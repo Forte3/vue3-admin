@@ -15,8 +15,12 @@ export function localRemove(key) {
   window.localStorage.removeItem(key)
 }
 
+// 单张图片上传
+export const uploadImgServer = 'http://backend-api-02.newbee.ltd/manage-api/v1/upload/file'
+
 export const pathMap = {
   index: '首页',
   login: '登录',
-  add: '添加商品'
+  add: '添加商品',
+  swiper: '轮播图'
 }

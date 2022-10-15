@@ -9,7 +9,8 @@
           </div>
         </div>
         <div class="line" />
-        <el-menu background-color="#222832" text-color="#fff" :router="true">
+        <el-menu background-color="#222832" text-color="#fff" :router="true" :default-openeds="defaultOpen"
+          :default-active='currentPath'>
           <el-sub-menu index="1">
             <template #title>
               <span>Dashboard</span>
@@ -17,15 +18,28 @@
             <el-menu-item-group>
               <el-menu-item index="/">
                 <el-icon>
-                  <DataLine />
+                  <Odometer />
                 </el-icon>首页
               </el-menu-item>
               <el-menu-item index="/add">
                 <el-icon>
-                  <DataLine />
+                  <Plus />
                 </el-icon>添加商品
               </el-menu-item>
             </el-menu-item-group>
+          </el-sub-menu>
+          <el-sub-menu index="2">
+            <template #title>
+              <span>首页配置</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="/swiper">
+                <el-icon>
+                  <Picture />
+                </el-icon>轮播图配置
+              </el-menu-item>
+            </el-menu-item-group>
+
           </el-sub-menu>
         </el-menu>
       </el-aside>
@@ -53,7 +67,9 @@ import { localGet, pathMap } from '@/utils'
 const noMenu = ['/login']
 const router = useRouter()
 const state = reactive({
-  showMenu: true
+  showMenu: true,
+  defaultOpen: ['1', '2'],
+  currentPath: '/'
 })
 
 router.beforeEach((to, from, next) => {
@@ -71,6 +87,8 @@ router.beforeEach((to, from, next) => {
     }
   }
   state.showMenu = !noMenu.includes(to.path)
+  // 选中高亮显示
+  state.currentPath = to.path
   document.title = pathMap[to.name]
 })
 </script>
