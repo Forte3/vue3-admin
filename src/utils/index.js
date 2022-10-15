@@ -22,5 +22,5 @@ export const pathMap = {
   index: '首页',
   login: '登录',
   add: '添加商品',
-  swiper: '轮播图'
+  swiper: '轮播图配置'
 }
