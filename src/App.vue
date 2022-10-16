@@ -9,8 +9,8 @@
           </div>
         </div>
         <div class="line" />
-        <el-menu background-color="#222832" text-color="#fff" :router="true" :default-openeds="defaultOpen"
-          :default-active='currentPath'>
+        <el-menu background-color="#222832" text-color="#fff" :router="true" :default-openeds="state.defaultOpen"
+          :default-active='state.currentPath'>
           <el-sub-menu index="1">
             <template #title>
               <span>Dashboard</span>
@@ -39,7 +39,6 @@
                 </el-icon>轮播图配置
               </el-menu-item>
             </el-menu-item-group>
-
           </el-sub-menu>
         </el-menu>
       </el-aside>

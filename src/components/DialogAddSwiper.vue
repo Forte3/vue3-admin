@@ -6,8 +6,7 @@
           :headers="{ token:state.token }" :show-file-list="false" :before-upload="handleBeforeUpload"
           :on-success="handleUrlSuccess">
           <img style="width: 200px; height: 100px; border: 1px solid #e9e9e9;" v-if="state.ruleForm.url"
-            :src="state.ruleForm.url" class="avatar" />
-          <!-- <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
+            :src="state.ruleForm.url" class="avatar">
           <el-icon v-else class="avatar-uploader-icon">
             <Plus />
           </el-icon>
