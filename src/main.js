@@ -18,6 +18,8 @@ import {
   ElUpload,
   ElDialog,
   ElPagination,
+  ElTableColumn,
+  ElPopconfirm,
 
 } from 'element-plus'
 import App from './App.vue'
@@ -50,5 +52,7 @@ app.use(ElButton)
   .use(ElUpload)
   .use(ElDialog)
   .use(ElPagination)
+  .use(ElTableColumn)
+  .use(ElPopconfirm)
 
 app.mount('#app') // 挂载到 #app

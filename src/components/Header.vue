@@ -58,7 +58,7 @@ const logout = () => {
 }
 
 router.afterEach((to) => {
-  console.log('to', to)
+  // console.log('to', to)
   const { id } = to.query
   state.name = pathMap[to.name]
 })
