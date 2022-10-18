@@ -1,7 +1,21 @@
 <template>
   <el-card class="index-container">
-    <el-table :load="state.loading" :data="state.tableData" tooltip-effect="dark" style="width: 100%;">
-      <el-table-column prop="configName" labe="商品名称"></el-table-column>
+    <!-- 增加，批量删除按钮 -->
+    <template #header>
+      <div class="header">
+        <el-button type="primary" :icon="Plus" @click="handleAdd">增加</el-button>
+        <el-popconfirm title="确定删除吗？" confirmButtonText="确定" cancelButtonText="取消" @confirm="handleDelete">
+          <template #reference>
+            <el-button type="danger" :icon="Delete">批量删除</el-button>
+          </template>
+        </el-popconfirm>
+      </div>
+    </template>
+    <!-- 列表 -->
+    <el-table :load="state.loading" ref="multipleTable" :data="state.tableData" tooltip-effect="dark"
+      style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="configName" label="商品名称"></el-table-column>
       <el-table-column label="跳转链接">
         <template #default="scope">
           <a target="_blank" :href="scope.row.redirectUrl">{{ scope.row.redirectUrl }}</a>
@@ -13,7 +27,7 @@
       <el-table-column label="操作" width="100">
         <template #default="scope">
           <a style="cursor: pointer; margin-right: 10px;" @click="handleEdit(scope.row.configId)">修改</a>
-          <el-popconfirm title="确定删除吗" confirmButtonText="确定" cancelButtonText="取消"
+          <el-popconfirm title="确定删除吗？" confirmButtonText="确定" cancelButtonText="取消"
             @confirm="handleDeleteOne(scope.row.configId)">
             <template #reference>
               <a style="cursor: pointer">删除</a>
@@ -27,12 +41,16 @@
       :current-page="state.currentPage" @current-change="changePage">
     </el-pagination>
   </el-card>
+  <DialogAddGood ref="addGood" :reload="getIndexConfig" :type="state.type" :configType="state.configType" />
 </template>
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
+import DialogAddGood from '@/components/DialogAddGood.vue'
+import { Plus, Delete } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 // 首页配置类型参数
 const configTypeMap = {
@@ -43,6 +61,8 @@ const configTypeMap = {
 
 const router = useRouter()
 const route = useRoute()
+const multipleTable = ref(null)
+const addGood = ref(null)
 const state = reactive({
   loading: false,
   tableData: [], // 数据列表
@@ -50,7 +70,8 @@ const state = reactive({
   currentPage: 1, // 当前页
   pageSize: 10, // 分页大小
   type: 'add', // 操作类型
-  configType: 3 // 3-(首页)热销商品 4-(首页)新品上线 5-(首页)为你推荐
+  configType: 3, // 3-(首页)热销商品 4-(首页)新品上线 5-(首页)为你推荐
+  multipleSelection: [] // 选中的数据
 })
 
 // 监听路由变化
@@ -91,7 +112,46 @@ const changePage = (val) => {
   getIndexConfig()
 }
 
+// 添加商品
+const handleAdd = () => {
+  state.type = 'add'
+  addGood.value.open()
+}
 
+// 修改商品
+const handleEdit = (id) => {
+  state.type = 'edit'
+  addGood.value.open(id)
+}
+
+// 选择项
+const handleSelectionChange = (val) => {
+  state.multipleSelection = val
+}
+
+// 删除
+const handleDelete = () => {
+  if (!state.multipleSelection.length) {
+    ElMessage.error('请选择要删除的项')
+    return
+  }
+  axios.post('/indexConfigs/delete', {
+    ids: state.multipleSelection.map(i => i.configId)
+  }).then(() => {
+    ElMessage.success('删除成功')
+    getIndexConfig()
+  })
+}
+
+// 删除单个
+const handleDeleteOne = (id) => {
+  axios.post('/indexConfigs/delete', {
+    ids: [id]
+  }).then(() => {
+    ElMessage.success('删除成功')
+    getIndexConfig()
+  })
+}
 
 </script>
 <style scoped>
