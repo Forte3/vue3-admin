@@ -3,11 +3,11 @@
     <el-card class="add-container">
       <el-form :model="state.goodForm" :rules="state.rules" ref="goodRef" label-width="100px" class="goodForm">
         <el-form-item required label="商品分类">
-          <el-cascader :placeholder="state.defaultCate" style="width: 300px;" :props="state.category"
+          <el-cascader :placeholder="state.defaultCate" style="width: 300px" :props="state.category"
             @change="handleChangeCate"></el-cascader>
         </el-form-item>
         <el-form-item label="商品名称" prop="goodsName">
-          <el-input style="width: 300px;" v-model="state.goodForm.goodsName" placeholder="请输入商品名称"></el-input>
+          <el-input style="width: 300px" v-model="state.goodForm.goodsName" placeholder="请输入商品名称"></el-input>
         </el-form-item>
         <el-form-item label="商品简介" prop="goodsIntro">
           <el-input style="width: 300px" type="textarea" v-model="state.goodForm.goodsIntro"
@@ -18,15 +18,15 @@
             placeholder="请输入商品价格"></el-input>
         </el-form-item>
         <el-form-item label="商品售卖价" prop="sellingPrice">
-          <el-input type="number" min="0" style="width: 300px;" v-model="state.goodForm.sellingPrice"
+          <el-input type="number" min="0" style="width: 300px" v-model="state.goodForm.sellingPrice"
             placeholder="请输入商品售价"></el-input>
         </el-form-item>
         <el-form-item label="商品库存" prop="stockNum">
-          <el-input type="number" min="0" style="width: 300px;" v-model="state.goodForm.stockNum" placeholder="请输入商品库存">
+          <el-input type="number" min="0" style="width: 300px" v-model="state.goodForm.stockNum" placeholder="请输入商品库存">
           </el-input>
         </el-form-item>
         <el-form-item label="商品标签" prop="tag">
-          <el-input style="width: 300px;" v-model="state.goodForm.tag" placeholder="请输入商品小标签"></el-input>
+          <el-input style="width: 300px" v-model="state.goodForm.tag" placeholder="请输入商品小标签"></el-input>
         </el-form-item>
         <el-form-item label="上架状态" prop="goodsSellStatus">
           <el-radio-group v-model="state.goodForm.goodsSellStatus">
@@ -36,7 +36,7 @@
         </el-form-item>
         <el-form-item required label="商品主图" prop="goodsCoverImg">
           <el-upload class="avatar-uploader" :action="state.uploadImgServer" accept="jpg,jpeg,png" :headers="{
-            token: state.token
+            token: token
           }" :show-file-list="false" :before-upload="handleBeforeUpload" :on-success="handleUrlSuccess">
             <img style="width: 100px; height: 100px; border: 1px solid #e9e9e9;" v-if="state.goodForm.goodsCoverImg"
               :src="state.goodForm.goodsCoverImg" class="avatar">
@@ -45,11 +45,11 @@
             </el-icon>
           </el-upload>
         </el-form-item>
-        <el-form-item label="详细内容">
-          <div ref="editor"></div>
+        <el-form-item label="详情内容">
+          <div ref='editor'></div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitAdd()">{{ state.id ? '立即修改' : '立即创建'}}</el-button>
+          <el-button type="primary" @click="submitAdd()">{{ state.id ? '立即修改' : '立即创建' }}</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
+import { reactive, ref, toRefs, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue'
 import WangEditor from 'wangeditor'
 import axios from '@/utils/axios'
 import { ElMessage } from 'element-plus'
@@ -65,18 +65,17 @@ import { useRoute, useRouter } from 'vue-router'
 import { localGet, uploadImgServer, uploadImgsServer } from '@/utils'
 
 const { proxy } = getCurrentInstance()
-const editor = ref(null) // 富文本编辑器
-const goodRef = ref(null) // 表单
+const editor = ref(null) // 富文本编辑器 ref
+const goodRef = ref(null) // 表单 ref
 const route = useRoute()
+const router = useRouter()
 const { id } = route.query // 编辑时传入的商品 id
-
 const state = reactive({
   uploadImgServer, // 上传图片的接口地址，单图上传
-  token: localGet('token') || '', // 本地存储的token
-  id: id, // 商品id
+  token: localGet('token') || '', // 存在本地的 token
+  id: id,
   defaultCate: '', // 默认分类值
-  // 商品表单内容
-  goodForm: {
+  goodForm: { // 商品表单内容
     goodsName: '',
     goodsIntro: '',
     originalPrice: '',
@@ -86,7 +85,7 @@ const state = reactive({
     goodsCoverImg: '',
     tag: ''
   },
-  rules: {
+  rules: { // 规则
     goodsName: [
       { required: 'true', message: '请填写商品名称', trigger: ['change'] }
     ],
@@ -98,7 +97,7 @@ const state = reactive({
     ],
     stockNum: [
       { required: 'true', message: '请填写商品库存', trigger: ['change'] }
-    ]
+    ],
   },
   categoryId: '', // 分类 id
   category: { // 联动组件 props 属性
@@ -124,14 +123,13 @@ const state = reactive({
     }
   }
 })
-
 let instance // wangEditor 实例
 onMounted(() => {
   instance = new WangEditor(editor.value) // 初始化 wangEditor
   instance.config.showLinkImg = false
   instance.config.showLinkImgAlt = false
   instance.config.showLinkImgHref = false
-  instance.config.uploadImgMaxSize = 2 * 1024 * 1024 // 最大上传大小 2M
+  instance.config.uploadImgMaxSize = 2 * 1024 * 1024 // 最大上传大小 2M 
   instance.config.uploadFileName = 'file' // 上传时，key 值自定义
   instance.config.uploadImgHeaders = {
     token: state.token // 添加 token，否则没有权限调用上传接口
@@ -139,11 +137,11 @@ onMounted(() => {
   // 图片返回格式不同，需要自定义返回格式
   instance.config.uploadImgHooks = {
     // 图片上传并返回了结果，想要自己把图片插入到编辑器中
-    // 例如服务器端返回的不是{ error:0, data: [...]} 这种格式，可使用 customInsert
+    // 例如服务器端返回的不是 { errno: 0, data: [...] } 这种格式，可使用 customInsert
     customInsert: function (insertImgFn, result) {
       console.log('result', result)
-      // result 服务器端返回的接口
-      // insertImgFn 可把图片插入到编辑器，传入图片 src，执行函数即可
+      // result 即服务端返回的接口
+      // insertImgFn 可把图片插入到编辑器，传入图片 src ，执行函数即可
       if (result.data && result.data.length) {
         result.data.forEach(item => insertImgFn(item))
       }
@@ -179,13 +177,11 @@ onMounted(() => {
     })
   }
 })
-
 onBeforeUnmount(() => {
   // 组件销毁之前，销毁 wangEditor 实例
   instance.destroy()
   instance = null
 })
-
 // 添加商品方法
 const submitAdd = () => {
   goodRef.value.validate((vaild) => {
@@ -217,49 +213,20 @@ const submitAdd = () => {
     }
   })
 }
-
-// 上传之前判断一下文件格式
+// 上传之前，判断一下文件格式
 const handleBeforeUpload = (file) => {
   const sufix = file.name.split('.')[1] || ''
   if (!['jpg', 'jpeg', 'png'].includes(sufix)) {
-    ElMessage.error('请上传 jpg, jpeg, png 格式的图片')
+    ElMessage.error('请上传 jpg、jpeg、png 格式的图片')
     return false
   }
 }
-
 // 图片上传成功后的回调
 const handleUrlSuccess = (val) => {
   state.goodForm.goodsCoverImg = val.data || ''
 }
-
 // 联动变化后的回调
 const handleChangeCate = (val) => {
   state.categoryId = val[2] || 0
 }
 </script>
-
-<style scoped>
-.add {
-  display: flex;
-}
-
-.add-container {
-  flex: 1;
-  height: 100%;
-}
-
-.avatar-uploader {
-  width: 100px;
-  height: 100px;
-  color: #ddd;
-  font-size: 30px;
-}
-
-.avatar-uploader-icon {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #e9e9e9;
-  padding: 32px 17px;
-}
-</style>
