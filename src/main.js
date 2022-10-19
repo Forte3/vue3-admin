@@ -35,7 +35,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-// 全局方法
+// 全局方法 图片
 app.config.globalProperties.$filters = {
   prefix(url) {
     if (url && url.startsWith('http')) {
@@ -47,6 +47,12 @@ app.config.globalProperties.$filters = {
       return url
     }
   }
+}
+
+// 页面顶部
+app.config.globalProperties.goTop = function () {
+  const main = document.querySelector('.main')
+  main.scrollTop = 0
 }
 
 app.use(router) // 引用路由实例

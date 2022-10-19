@@ -44,6 +44,7 @@ import axios from '@/utils/axios'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { getCurrentInstance } from 'vue'
 
 const router = useRouter()
 const state = reactive({
@@ -53,6 +54,10 @@ const state = reactive({
   currentPage: 1, // 当前页
   pageSize: 10 // 分页大小
 })
+
+// 跳回页面顶部
+const app = getCurrentInstance()
+const { goTop } = app.appContext.config.globalProperties
 
 onMounted(() => {
   getGoodList()
@@ -72,6 +77,7 @@ const getGoodList = () => {
     state.total = res.totalCount // 数据总条数
     state.currentPage = res.currPage // 当前页
     state.loading = false // 数据成功返回后，将列表 loading 清除
+    goTop && goTop() // 跳回页面顶部
   })
 }
 
