@@ -4,6 +4,7 @@ import AddGood from '@/views/AddGood.vue'
 import Login from '@/views/Login.vue'
 import Swiper from '@/views/Swiper.vue'
 import IndexConfig from '@/views/IndexConfig.vue'
+import Good from '@/views/Good.vue'
 
 const router = createRouter({
   history: createWebHashHistory(), // hash 模式
@@ -43,6 +44,11 @@ const router = createRouter({
       name: 'recommend',
       component: IndexConfig
     },
+    {
+      path: '/good',
+      name: 'good',
+      component: Good
+    }
   ]
 })
 

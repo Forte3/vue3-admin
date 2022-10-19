@@ -58,6 +58,25 @@
               </el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
+          <el-sub-menu index="3">
+            <template #title>
+              <span>模块管理</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="/category">
+                <el-icon>
+                  <Menu />
+                </el-icon>
+                分类管理
+              </el-menu-item>
+              <el-menu-item index="/good">
+                <el-icon>
+                  <Goods />
+                </el-icon>
+                商品管理
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-sub-menu>
         </el-menu>
       </el-aside>
       <el-container class="content">
