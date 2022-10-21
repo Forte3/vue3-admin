@@ -39,12 +39,15 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, getCurrentInstance } from 'vue'
 import axios from '@/utils/axios'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { getCurrentInstance } from 'vue'
+
+// 跳回页面顶部
+const app = getCurrentInstance()
+const { goTop } = app.appContext.config.globalProperties
 
 const router = useRouter()
 const state = reactive({
@@ -54,10 +57,6 @@ const state = reactive({
   currentPage: 1, // 当前页
   pageSize: 10 // 分页大小
 })
-
-// 跳回页面顶部
-const app = getCurrentInstance()
-const { goTop } = app.appContext.config.globalProperties
 
 onMounted(() => {
   getGoodList()
@@ -87,7 +86,7 @@ const handleAdd = () => {
 }
 
 // 编辑商品，带 id 跳转 /add 路径
-const handleEdit = () => {
+const handleEdit = (id) => {
   router.push({ path: '/add', query: { id } })
 }
 
