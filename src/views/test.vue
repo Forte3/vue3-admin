@@ -1,52 +1,77 @@
 <template>
-  <el-card class="order-container">
-    <div class="data">
-      <el-card class="data-item" shadow="hover">
-        <template #header>
-          <div class="card-header">
-            <span>订单状态</span>
-          </div>
-        </template>
-        <div>
-          {{ state.data.orderStatusString }}
-        </div>
-      </el-card>
-      <el-card class="data-item" shadow="hover">
-        <template #header>
-          <div class="card-header">
-            <span>创建时间</span>
-          </div>
-        </template>
-        <div>
-          {{ state.data.createTime }}
-        </div>
-      </el-card>
-      <el-card class="data-item" shadow="hover">
-        <template #header>
-          <div class="card-header">
-            <span>订单号</span>
-          </div>
-        </template>
-        <div>
-          {{ state.data.orderNo }}
-        </div>
-      </el-card>
-    </div>
-    <el-table :data="state.tableData" tooltip-effect="dark" style="width: 100%">
-      <el-table-column label="商品图片">
+  <el-card class="category-container">
+    <el-table :load="state.loading" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column prop="categoryName" label="分类名称">
+      </el-table-column>
+      <el-table-column prop="categoryRank" label="排序值" width="120">
+      </el-table-column>
+      <el-table-column prop="createTime" label="添加时间" width="200">
+      </el-table-column>
+      <el-table-column label="操作" width="220">
         <template #default="scope">
-          <img style="width: 100px" :key="scope.row.goodsId" :src="$filters.prefix(scope.row.goodsCoverImg)" alt="商品主图">
+          <a style="cursor: pointer; margin-right: 10px" @click="handleEdit(scope.row.categoryId)">修改</a>
+          <a style="cursor: pointer; margin-right: 10px" @click="handleNext(scope.row)">下级分类</a>
+          <el-popconfirm title="确定删除吗？" @confirm="handleDeleteOne(scope.row.categoryId)">
+            <template #reference>
+              <a style="cursor: pointer">删除</a>
+            </template>
+          </el-popconfirm>
         </template>
-      </el-table-column>
-      <el-table-column prop="goodsId" label="商品编号">
-      </el-table-column>
-      <el-table-column prop="goodsName" label="商品名"></el-table-column>
-      <el-table-column prop="goodsCount" label="商品数量">
-      </el-table-column>
-      <el-table-column prop="sellingPrice" label="价格">
       </el-table-column>
     </el-table>
+    <!--总数超过一页，再展示分页器-->
+    <el-pagination background layout="prev, pager, next" :total="state.total" :page-size="state.pageSize"
+      :current-page="state.currentPage" @current-change="changePage" />
   </el-card>
 </template>
 
-<script setup></script>
+<script setup>
+import { onMounted, onUnmounted, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { Plus, Delete } from '@element-plus/icons-vue'
+import axios from '@/utils/axios'
+
+const router = useRouter() // 声明路由实例
+const route = useRoute() // 获取路由参数
+const state = reactive({
+  loading: false,
+  tableData: [], // 数据列表
+  total: 0, // 总条数
+  currentPage: 1, // 当前页
+  pageSize: 10, // 分页大小
+  type: 'add', // 操作类型
+  level: 1,
+  parent_id: 0
+})
+onMounted(() => {
+  getCategory()
+})
+// 获取分类列表
+const getCategory = () => {
+  const { level = 1, parent_id = 0 } = route.query
+  state.loading = true
+  axios.get('/categories', {
+    params: {
+      pageNumber: state.currentPage,
+      pageSize: state.pageSize,
+      categoryLevel: level,
+      parentId: parent_id
+    }
+  }).then(res => {
+    state.tableData = res.list
+    state.total = res.totalCount
+    state.currentPage = res.currPage
+    state.loading = false
+    state.level = level
+    state.parentId = parent_id
+  })
+}
+const changePage = (val) => {
+  state.currentPage = val
+  getCategory()
+}
+</script>>

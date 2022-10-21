@@ -1,6 +1,9 @@
 <template>
   <div class="header">
     <div class="left">
+      <el-icon class="back" v-if="state.hasBack" @click="back">
+        <Back />
+      </el-icon>
       <span style="font-size: 20px">{{ state.name }}</span>
     </div>
     <div class="right">
@@ -31,7 +34,8 @@ import axios from '@/utils/axios'
 const router = useRouter()
 const state = reactive({
   name: 'dashboard',
-  userInfo: null
+  userInfo: null, // 用户信息
+  hasBack: false // 是否显示返回图标
 })
 
 onMounted(() => {
@@ -61,7 +65,12 @@ router.afterEach((to) => {
   // console.log('to', to)
   const { id } = to.query
   state.name = pathMap[to.name]
+  state.hasBack = ['level2', 'level3'].includes(to.name)
 })
+
+const back = () => {
+  router.back()
+}
 
 </script>
 
@@ -102,6 +111,14 @@ router.afterEach((to) => {
   position: absolute;
   right: 0;
   top: 0;
+  cursor: pointer;
+}
+
+.header .left .back {
+  border: 1px solid #e9e9e9;
+  padding: 5px;
+  border-radius: 50%;
+  margin-right: 5px;
   cursor: pointer;
 }
 </style>

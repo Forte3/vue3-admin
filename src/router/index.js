@@ -4,6 +4,7 @@ import AddGood from '@/views/AddGood.vue'
 import Login from '@/views/Login.vue'
 import Swiper from '@/views/Swiper.vue'
 import IndexConfig from '@/views/IndexConfig.vue'
+import Category from '@/views/Category.vue'
 import Good from '@/views/Good.vue'
 import Order from '@/views/Order.vue'
 import OrderDetail from '@/views/OrderDetail.vue'
@@ -46,6 +47,23 @@ const router = createRouter({
       path: '/recommend',
       name: 'recommend',
       component: IndexConfig
+    },
+    {
+      path: '/category',
+      name: 'category',
+      component: Category,
+      children: [
+        {
+          path: '/category/level2',
+          name: 'level2',
+          component: Category
+        },
+        {
+          path: '/category/level3',
+          name: 'level3',
+          component: Category
+        },
+      ]
     },
     {
       path: '/good',

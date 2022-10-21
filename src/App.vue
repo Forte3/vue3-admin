@@ -116,7 +116,8 @@ const noMenu = ['/login']
 const router = useRouter()
 const state = reactive({
   showMenu: true,
-  defaultOpen: ['1', '2'],
+  // 默认打开的数组
+  defaultOpen: ['1', '2', '3'],
   currentPath: '/'
 })
 
