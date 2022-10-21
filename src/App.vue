@@ -75,6 +75,12 @@
                 </el-icon>
                 商品管理
               </el-menu-item>
+              <el-menu-item index="/order">
+                <el-icon>
+                  <List />
+                </el-icon>
+                商品管理
+              </el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
         </el-menu>
