@@ -11,81 +11,81 @@ import OrderDetail from '@/views/OrderDetail.vue'
 import Guest from '@/views/Guest.vue'
 
 const router = createRouter({
-  history: createWebHashHistory(), // hash 模式
-  routes: [
-    {
-      path: '/',
-      name: 'index',
-      component: Index
-    },
-    {
-      path: '/add',
-      name: 'add',
-      component: AddGood
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
-    },
-    {
-      path: '/swiper',
-      name: 'swiper',
-      component: Swiper
-    },
-    {
-      path: '/hot',
-      name: 'hot',
-      component: IndexConfig
-    },
-    {
-      path: '/new',
-      name: 'new',
-      component: IndexConfig
-    },
-    {
-      path: '/recommend',
-      name: 'recommend',
-      component: IndexConfig
-    },
-    {
-      path: '/category',
-      name: 'category',
-      component: Category,
-      children: [
-        {
-          path: '/category/level2',
-          name: 'level2',
-          component: Category
-        },
-        {
-          path: '/category/level3',
-          name: 'level3',
-          component: Category
-        },
-      ]
-    },
-    {
-      path: '/good',
-      name: 'good',
-      component: Good
-    },
-    {
-      path: '/order',
-      name: 'order',
-      component: Order
-    },
-    {
-      path: '/order_detail',
-      name: 'order_detail',
-      component: OrderDetail
-    },
-    {
-      path: '/guest',
-      name: 'guest',
-      component: Guest
-    }
-  ]
+   history: createWebHashHistory(), // hash 模式
+   routes: [
+      {
+         path: '/',
+         name: 'index',
+         component: Index
+      },
+      {
+         path: '/add',
+         name: 'add',
+         component: AddGood
+      },
+      {
+         path: '/login',
+         name: 'login',
+         component: Login
+      },
+      {
+         path: '/swiper',
+         name: 'swiper',
+         component: Swiper
+      },
+      {
+         path: '/hot',
+         name: 'hot',
+         component: IndexConfig
+      },
+      {
+         path: '/new',
+         name: 'new',
+         component: IndexConfig
+      },
+      {
+         path: '/recommend',
+         name: 'recommend',
+         component: IndexConfig
+      },
+      {
+         path: '/category',
+         name: 'category',
+         component: Category,
+         children: [
+            {
+               path: '/category/level2',
+               name: 'level2',
+               component: Category
+            },
+            {
+               path: '/category/level3',
+               name: 'level3',
+               component: Category
+            },
+         ]
+      },
+      {
+         path: '/good',
+         name: 'good',
+         component: Good
+      },
+      {
+         path: '/order',
+         name: 'order',
+         component: Order
+      },
+      {
+         path: '/order_detail',
+         name: 'order_detail',
+         component: OrderDetail
+      },
+      {
+         path: '/guest',
+         name: 'guest',
+         component: Guest
+      }
+   ]
 })
 
 export default router
