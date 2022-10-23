@@ -1,31 +1,20 @@
 <template>
-  <el-card class="category-container">
-    <el-table :load="state.loading" ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%"
-      @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55">
-      </el-table-column>
-      <el-table-column prop="categoryName" label="分类名称">
-      </el-table-column>
-      <el-table-column prop="categoryRank" label="排序值" width="120">
-      </el-table-column>
-      <el-table-column prop="createTime" label="添加时间" width="200">
-      </el-table-column>
-      <el-table-column label="操作" width="220">
-        <template #default="scope">
-          <a style="cursor: pointer; margin-right: 10px" @click="handleEdit(scope.row.categoryId)">修改</a>
-          <a style="cursor: pointer; margin-right: 10px" @click="handleNext(scope.row)">下级分类</a>
-          <el-popconfirm title="确定删除吗？" @confirm="handleDeleteOne(scope.row.categoryId)">
-            <template #reference>
-              <a style="cursor: pointer">删除</a>
-            </template>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!--总数超过一页，再展示分页器-->
-    <el-pagination background layout="prev, pager, next" :total="state.total" :page-size="state.pageSize"
-      :current-page="state.currentPage" @current-change="changePage" />
-  </el-card>
+  <el-dialog :title="type == 'add' ? '添加分类': '修改分类'" v-model='state.visible' width="400px">
+    <el-form :model="state.ruleForm" :rules="state.rules" ref="formRef" label-width="100px" class="good-form">
+      <el-form-item label="商品名称" prop="name">
+        <el-input type="text" v-model="state.ruleForm.name"></el-input>
+      </el-form-item>
+      <el-form-item label="排序值" prop="rank">
+        <el-input type="number" v-model="state.ruleForm.rank"></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="state.visible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -59,6 +48,7 @@ const state = reactive({
   },
   id: ''
 })
+
 // 获取详情
 const getDetail = (id) => {
   axios.get(`/categories/${id}`).then(res => {
@@ -70,6 +60,7 @@ const getDetail = (id) => {
     state.categoryLevel = res.categoryLevel
   })
 }
+
 // 开启弹窗
 const open = (id) => {
   state.visible = true
@@ -89,10 +80,12 @@ const open = (id) => {
     state.categoryLevel = level
   }
 }
+
 // 关闭弹窗
 const close = () => {
   state.visible = false
 }
+
 const submitForm = () => {
   formRef.value.validate((valid) => {
     if (valid) {
@@ -114,7 +107,7 @@ const submitForm = () => {
         axios.put('/categories', {
           categoryId: state.id,
           categoryLevel: state.categoryLevel,
-          parentId: state.categoryLevel,
+          parentId: state.parentId,
           categoryName: state.ruleForm.name,
           categoryRank: state.ruleForm.rank
         }).then(() => {
@@ -127,4 +120,11 @@ const submitForm = () => {
     }
   })
 }
+
+defineExpose({ open, close })
+
 </script>
+
+<style scoped>
+
+</style>

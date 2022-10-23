@@ -1,5 +1,16 @@
 <template>
   <el-card class="category-container">
+    <!-- 气泡确认框 -->
+    <template #header>
+      <div class="header">
+        <el-button type="primary" :icon="Plus" @click="handleAdd">增加</el-button>
+        <el-popconfirm title="确定删除吗？" confirmButtonText="确定" cancelButtonText="取消" @confirm="handleDelete">
+          <template>
+            <el-button type="danger" :icon="Delete">批量删除</el-button>
+          </template>
+        </el-popconfirm>
+      </div>
+    </template>
     <el-table :load="state.loading" ref="multipleTable" :data="state.tableData" tooltip-effect="dark"
       style="width: 100%;" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
@@ -20,7 +31,10 @@
     </el-table>
     <!-- 分页器 -->
     <el-pagination background layout="prev, pager, next" :total="state.total" :page-size="state.pageSize"
-      :current-page="state.currentPage" @current-change="changePage"></el-pagination>
+      :current-page="state.currentPage" @current-change="changePage">
+    </el-pagination>
+    <!-- 新增，删除，修改 -->
+    <DialogAddCategory ref="addCate" :reload="getCategory" :type="state.type"></DialogAddCategory>
   </el-card>
 </template>
 
@@ -30,6 +44,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Plus, Delete } from '@element-plus/icons-vue'
 import axios from '@/utils/axios'
+import DialogAddCategory from '@/components/DialogAddCategory.vue'
 
 const router = useRouter()  // 声明路由实例
 const route = useRoute() // 获取路由参数
@@ -42,7 +57,9 @@ const state = reactive({
   type: 'add', // 操作类型
   level: 1, // 分类级别
   parent_id: 0, // 父级分类id
+  multipleSelection: [], // 选中项
 })
+const addCate = ref(null)
 
 onMounted(() => {
   getCategory()
@@ -103,6 +120,51 @@ const handleNext = (item) => {
   })
 }
 
+// 添加分类
+const handleAdd = () => {
+  state.type = 'add' // 传入弹窗组件用于弹窗 title 判断
+  addCate.value.open() // 调用子组件方法
+}
+
+// 修改分类
+const handleEdit = (id) => {
+  state.type = 'edit'
+  addCate.value.open(id)
+}
+
+// 选择项
+const handleSelectionChange = (val) => {
+  // 多选 checkbox 
+  state.multipleSelection = val
+}
+
+// 批量删除
+const handleDelete = () => {
+  if (!state.multipleSelection.length) {
+    ElMessage.error('请选择项')
+    return
+  }
+  axios.delete('/categories', {
+    data: {
+      ids: state.multipleSelection.map(i => i.categoryId)
+    }
+  }).then(() => {
+    ElMessage.success('删除成功')
+    getCategory()
+  })
+}
+
+// 单个删除
+const handleDeleteOne = (id) => {
+  axios.delete('/categories', {
+    data: {
+      ids: [id]
+    }
+  }).then(() => {
+    ElMessage.success('删除成功')
+    getCategory()
+  })
+}
 
 </script>
 
