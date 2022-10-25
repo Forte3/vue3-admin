@@ -89,6 +89,19 @@
                      </el-menu-item>
                   </el-menu-item-group>
                </el-sub-menu>
+               <el-sub-menu index="4">
+                  <template #title>
+                     <span>系统管理</span>
+                  </template>
+                  <el-menu-item-group>
+                     <el-menu-item index="/account">
+                        <el-icon>
+                           <Lock />
+                        </el-icon>
+                        修改密码
+                     </el-menu-item>
+                  </el-menu-item-group>
+               </el-sub-menu>
             </el-menu>
          </el-aside>
          <el-container class="content">
@@ -111,13 +124,14 @@ import { useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import { localGet, pathMap } from '@/utils'
+import { Lock } from '@element-plus/icons-vue'
 
 const noMenu = ['/login']
 const router = useRouter()
 const state = reactive({
    showMenu: true,
    // 默认打开的数组
-   defaultOpen: ['1', '2', '3'],
+   defaultOpen: ['1', '2', '3', '4'],
    currentPath: '/'
 })
 
